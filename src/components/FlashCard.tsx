@@ -6,7 +6,7 @@ interface Props {
   word: Word
   onKnown: () => void
   onUnknown: () => void
-  progress: { current: number; total: number }
+  progress: { current: number; total: number; label?: string }
 }
 
 export default function FlashCard({ word, onKnown, onUnknown, progress }: Props) {
@@ -41,8 +41,11 @@ export default function FlashCard({ word, onKnown, onUnknown, progress }: Props)
       {/* 进度条 */}
       <div className="w-full max-w-md mb-6">
         <div className="flex justify-between text-sm text-gray-500 mb-2">
-          <span>{progress.current} / {progress.total}</span>
-          <span>{Math.round((progress.current / progress.total) * 100)}%</span>
+          <span>
+            {progress.label && <span className="mr-2 px-2 py-0.5 text-xs rounded-full bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400">{progress.label}</span>}
+            {progress.current} / {progress.total}
+          </span>
+          <span>{progress.total > 0 ? Math.round((progress.current / progress.total) * 100) : 0}%</span>
         </div>
         <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
           <motion.div

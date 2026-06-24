@@ -1,5 +1,10 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import WordListSelector from '../components/WordListSelector'
+import type { ExamProgress } from '../components/WordListSelector'
+import { wordBank } from '../data/wordlists'
+import { db } from '../utils/db'
+import type { ExamType } from '../types/word'
 
 const QUIZ_EXAMS = [
   { key: 'toefl', label: 'TOEFL', color: 'from-blue-500 to-cyan-500' },
@@ -8,7 +13,37 @@ const QUIZ_EXAMS = [
   { key: 'ssat', label: 'SSAT', color: 'from-emerald-500 to-teal-500' },
 ]
 
+const ALL_EXAMS: ExamType[] = ['toefl', 'gre', 'sat', 'ssat']
+
 export default function Home() {
+  const [progress, setProgress] = useState<Partial<Record<ExamType, ExamProgress>>>({})
+
+  useEffect(() => {
+    async function loadProgress() {
+      const allRecords = await db.records.toArray()
+      const recordMap = new Map(allRecords.map((r) => [r.wordId, r]))
+      const now = Date.now()
+
+      const result: Partial<Record<ExamType, ExamProgress>> = {}
+      for (const exam of ALL_EXAMS) {
+        result[exam] = { learned: 0, due: 0 }
+      }
+
+      for (const w of wordBank) {
+        const rec = recordMap.get(w.id)
+        if (!rec) continue
+        for (const exam of w.examTags) {
+          const p = result[exam]!
+          p.learned++
+          if (rec.nextReviewAt <= now) p.due++
+        }
+      }
+
+      setProgress(result)
+    }
+    loadProgress()
+  }, [])
+
   return (
     <div>
       <div className="text-center mb-10">
@@ -19,7 +54,7 @@ export default function Home() {
           支持托福 / GRE / SAT / SSAT 四大考试词库，英英释义 + 中文释义 + 同义词反义词全覆盖
         </p>
       </div>
-      <WordListSelector />
+      <WordListSelector progress={progress} />
 
       {/* 快速测验入口 */}
       <div className="mt-10 max-w-2xl mx-auto">
