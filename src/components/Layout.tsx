@@ -4,6 +4,7 @@ const navItems = [
   { path: '/', label: '词库', icon: '📖' },
   { path: '/stats', label: '统计', icon: '📊' },
   { path: '/wrong-words', label: '错词本', icon: '📝' },
+  { path: '/settings', label: '设置', icon: '⚙️' },
 ]
 
 export default function Layout() {

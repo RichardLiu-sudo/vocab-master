@@ -1,4 +1,12 @@
+import { Link } from 'react-router-dom'
 import WordListSelector from '../components/WordListSelector'
+
+const QUIZ_EXAMS = [
+  { key: 'toefl', label: 'TOEFL', color: 'from-blue-500 to-cyan-500' },
+  { key: 'gre', label: 'GRE', color: 'from-purple-500 to-pink-500' },
+  { key: 'sat', label: 'SAT', color: 'from-orange-500 to-red-500' },
+  { key: 'ssat', label: 'SSAT', color: 'from-emerald-500 to-teal-500' },
+]
 
 export default function Home() {
   return (
@@ -12,6 +20,24 @@ export default function Home() {
         </p>
       </div>
       <WordListSelector />
+
+      {/* 快速测验入口 */}
+      <div className="mt-10 max-w-2xl mx-auto">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 text-center">
+          快速测验
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {QUIZ_EXAMS.map(({ key, label, color }) => (
+            <Link
+              key={key}
+              to={`/quiz/${key}`}
+              className={`bg-gradient-to-r ${color} text-white py-3 px-4 rounded-xl text-sm font-medium text-center hover:shadow-lg hover:-translate-y-0.5 transition-all`}
+            >
+              {label} 测验
+            </Link>
+          ))}
+        </div>
+      </div>
 
       <div className="mt-12 max-w-2xl mx-auto grid grid-cols-3 gap-4 text-center">
         {[
