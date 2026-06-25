@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { getWordsByExam } from '../data/wordlists'
+import { processReview } from '../utils/spacedRepetition'
 import type { ExamType } from '../types/word'
 import type { Word } from '../types/word'
 
@@ -98,6 +99,8 @@ export default function Quiz() {
         ...prev,
         { selectedIndex: optionIndex, correctIndex: q.correctIndex, isCorrect },
       ])
+      // 答对标记为已掌握(grade=4)，答错重置学习进度(grade=0)
+      processReview(q.word.id, isCorrect ? 4 : 0)
     },
     [currentIndex, questions],
   )
